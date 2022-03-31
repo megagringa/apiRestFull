@@ -1,8 +1,10 @@
 const express = require('express');
 const Curso = require('../models/curso_model');
+const verificarToken = require('../middlewares/auth');
 const ruta = express.Router();
 
-ruta.get('/',(req, res) => {
+ruta.get('/', verificarToken, (req, res) => {   
+
     let resultado = listarCursosActivos();
     resultado.then(cursos => {
         res.json(cursos);
@@ -11,8 +13,8 @@ ruta.get('/',(req, res) => {
     })
 });
 
-ruta.post('/', (req, res) => {
-    let resultado = crearCurso(req.body);
+ruta.post('/', verificarToken, (req, res) => {
+    let resultado = crearCurso(req);
 
     resultado.then(curso => {
         res.json({
@@ -25,7 +27,7 @@ ruta.post('/', (req, res) => {
     })
 });
 
-ruta.delete('/:id', (req, res) => {
+ruta.delete('/:id', verificarToken, (req, res) => {
     let resultado = desactivarCurso(req.params.id);
     resultado.then(curso => {
         res.json(curso);
@@ -34,7 +36,7 @@ ruta.delete('/:id', (req, res) => {
     })
 })
 
-ruta.put('/:id', (req, res) => {
+ruta.put('/:id', verificarToken, (req, res) => {
     let resultado = actualizarCurso(req.params.id, req.body);
     resultado.then(curso => {
         res.json(curso)
@@ -44,15 +46,19 @@ ruta.put('/:id', (req, res) => {
 })
 
 async function listarCursosActivos(){
-    let cursos = await Curso.find({"estado": true});
+    let cursos = await Curso
+        .find({"estado": true})
+        .populate('autor','nombre -_id');
     return cursos;
 }
 
-async function crearCurso(body){
+async function crearCurso(req){
     let curso = new Curso({
-        titulo       : body.titulo,
-        descripcion  : body.desc
-    });
+        titulo       : req.body.titulo,
+        autor        : req.usuario._id,
+        //autor        : req.usuario,
+        descripcion  : req.body.desc
+    });    
     return await curso.save();
 }
 

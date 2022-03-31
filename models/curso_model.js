@@ -1,10 +1,19 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
+const alumnoSchema = new mongoose.Schema({
+    nombre:String,
+    email: String
+})
 const cursoSchema = new mongoose.Schema({
     titulo: {
         type:String,
         required: true
     },
+    alumnos: [alumnoSchema],        
+    autor:{
+        type: Schema.Types.ObjectId, ref: 'Usuario'
+    },   
     descripcion: {
         type:String,
         required:false
@@ -16,10 +25,6 @@ const cursoSchema = new mongoose.Schema({
     imagen: {
         type: String,
         required: false        
-    },
-    alumnos: {
-        type: Number,
-        default: 0
     },
     califica: {
         type: Number,
