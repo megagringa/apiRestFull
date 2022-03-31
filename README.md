@@ -6,6 +6,8 @@
 - Express
 - Node.js
 - JS
+- bCrypt
+- JWT
 
 
 
@@ -15,5 +17,10 @@
 - Creando Modelos
 - POST, PUT, DELETE, GET y a la DB 
 - Validaciones
+- Protección de datos del usuario
+- Login de usuarios y protección de rutas
+- Middleware de validación
+
+Ejercicio de práctica.
 
 
